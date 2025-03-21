@@ -10,7 +10,7 @@
 #include "framework/argument/basic_argument.h"
 #include "framework/test_case/test_case.h"
 
-struct SubmitKernelArguments : TestCaseArgumentContainer {
+struct SubmitRangeKernelArguments : TestCaseArgumentContainer {
     BooleanArgument useProfiling;
     BooleanArgument inOrderQueue;
     BooleanArgument useEnqueueFunctions;
@@ -19,7 +19,7 @@ struct SubmitKernelArguments : TestCaseArgumentContainer {
     PositiveIntegerArgument kernelExecutionTime;
     BooleanArgument measureCompletionTime;
 
-    SubmitKernelArguments()
+    SubmitRangeKernelArguments()
         : useProfiling(*this, "Profiling", "Create the queue with the enable_profiling property"),
           inOrderQueue(*this, "Ioq", "Create the queue with the in_order property"),
           useEnqueueFunctions(*this, "EnqueueFunctions", "Use the eventless SYCL enqueue functions"),
@@ -29,14 +29,14 @@ struct SubmitKernelArguments : TestCaseArgumentContainer {
           measureCompletionTime(*this, "MeasureCompletion", "Measures time taken to complete the submission (default is to measure only submit calls)") {}
 };
 
-struct SubmitKernel : TestCase<SubmitKernelArguments> {
-    using TestCase<SubmitKernelArguments>::TestCase;
+struct SubmitRangeKernel : TestCase<SubmitRangeKernelArguments> {
+    using TestCase<SubmitRangeKernelArguments>::TestCase;
 
     std::string getTestCaseName() const override {
-        return "SubmitKernel";
+        return "SubmitRangeKernel";
     }
 
     std::string getHelp() const override {
-        return "measures time spent in submitting a kernel to a SYCL (or SYCL-like) queue on CPU.";
+        return "measures time spent in submitting a kernel using a range to a SYCL (or SYCL-like) queue on CPU.";
     }
 };

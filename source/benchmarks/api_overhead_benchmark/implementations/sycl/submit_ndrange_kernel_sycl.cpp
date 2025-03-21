@@ -8,7 +8,7 @@
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/timer.h"
 
-#include "definitions/submit_kernel.h"
+#include "definitions/submit_ndrange_kernel.h"
 
 #include <gtest/gtest.h>
 #include <sycl/sycl.hpp>
@@ -32,7 +32,7 @@ static const sycl::property_list queueProps[] = {
     sycl::property_list{inOrder, enableProfiling},
 };
 
-static TestResult run(const SubmitKernelArguments &arguments, Statistics &statistics) {
+static TestResult run(const SubmitNDRangeKernelArguments &arguments, Statistics &statistics) {
     MeasurementFields typeSelector(MeasurementUnit::Microseconds, MeasurementType::Cpu);
 
     if (isNoopRun()) {
@@ -96,4 +96,4 @@ static TestResult run(const SubmitKernelArguments &arguments, Statistics &statis
     return TestResult::Success;
 }
 
-[[maybe_unused]] static RegisterTestCaseImplementation<SubmitKernel> registerTestCase(run, Api::SYCL);
+[[maybe_unused]] static RegisterTestCaseImplementation<SubmitNDRangeKernel> registerTestCase(run, Api::SYCL);

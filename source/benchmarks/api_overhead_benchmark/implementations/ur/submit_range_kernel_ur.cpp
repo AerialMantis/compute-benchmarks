@@ -12,7 +12,7 @@
 #include "framework/utility/file_helper.h"
 #include "framework/utility/timer.h"
 
-#include "definitions/submit_kernel.h"
+#include "definitions/submit_range_kernel.h"
 
 #include <gtest/gtest.h>
 
@@ -20,7 +20,7 @@ static constexpr size_t n_dimensions = 3;
 static constexpr size_t global_size[] = {1, 1, 1};
 static constexpr size_t local_size[] = {1, 1, 1};
 
-static TestResult run(const SubmitKernelArguments &arguments, Statistics &statistics) {
+static TestResult run(const SubmitRangeKernelArguments &arguments, Statistics &statistics) {
     MeasurementFields typeSelectorHwI(MeasurementUnit::CpuHardwareCounter, MeasurementType::Cpu);
     MeasurementFields typeSelector(MeasurementUnit::Microseconds, MeasurementType::Cpu);
 
@@ -138,4 +138,4 @@ static TestResult run(const SubmitKernelArguments &arguments, Statistics &statis
     return TestResult::Success;
 }
 
-[[maybe_unused]] static RegisterTestCaseImplementation<SubmitKernel> registerTestCase(run, Api::UR);
+[[maybe_unused]] static RegisterTestCaseImplementation<SubmitRangeKernel> registerTestCase(run, Api::UR);

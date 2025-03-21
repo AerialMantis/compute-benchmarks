@@ -10,11 +10,11 @@
 #include "framework/utility/file_helper.h"
 #include "framework/utility/timer.h"
 
-#include "definitions/submit_kernel.h"
+#include "definitions/submit_range_kernel.h"
 
 #include <gtest/gtest.h>
 
-static TestResult run(const SubmitKernelArguments &arguments, Statistics &statistics) {
+static TestResult run(const SubmitRangeKernelArguments &arguments, Statistics &statistics) {
     MeasurementFields typeSelector(MeasurementUnit::Microseconds, MeasurementType::Cpu);
 
     if (isNoopRun()) {
@@ -93,4 +93,4 @@ static TestResult run(const SubmitKernelArguments &arguments, Statistics &statis
     return TestResult::Success;
 }
 
-[[maybe_unused]] static RegisterTestCaseImplementation<SubmitKernel> registerTestCase(run, Api::OpenCL);
+[[maybe_unused]] static RegisterTestCaseImplementation<SubmitRangeKernel> registerTestCase(run, Api::OpenCL);

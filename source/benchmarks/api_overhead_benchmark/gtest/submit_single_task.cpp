@@ -5,20 +5,20 @@
  *
  */
 
-#include "definitions/submit_kernel.h"
+#include "definitions/submit_single_task.h"
 
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/common_gtest_args.h"
 
 #include <gtest/gtest.h>
 
-[[maybe_unused]] static const inline RegisterTestCase<SubmitKernel> registerTestCase{};
+[[maybe_unused]] static const inline RegisterTestCase<SubmitSingleTask> registerTestCase{};
 
-class SubmitKernelTest : public ::testing::TestWithParam<std::tuple<Api, bool, bool, bool, bool, size_t, size_t, bool>> {
+class SubmitSingleTaskTest : public ::testing::TestWithParam<std::tuple<Api, bool, bool, bool, bool, size_t, size_t, bool>> {
 };
 
-TEST_P(SubmitKernelTest, Test) {
-    SubmitKernelArguments args{};
+TEST_P(SubmitSingleTaskTest, Test) {
+    SubmitSingleTaskArguments args{};
     args.api = std::get<0>(GetParam());
     args.useProfiling = std::get<1>(GetParam());
     args.inOrderQueue = std::get<2>(GetParam());
@@ -27,13 +27,13 @@ TEST_P(SubmitKernelTest, Test) {
     args.numKernels = std::get<5>(GetParam());
     args.kernelExecutionTime = std::get<6>(GetParam());
     args.measureCompletionTime = std::get<7>(GetParam());
-    SubmitKernel test;
+    SubmitSingleTask test;
     test.run(args);
 }
 
 INSTANTIATE_TEST_SUITE_P(
-    SubmitKernelTest,
-    SubmitKernelTest,
+    SubmitSingleTaskTest,
+    SubmitSingleTaskTest,
     ::testing::Combine(
         ::CommonGtestArgs::allApis(),
         ::testing::Values(false),         // useProfiling
