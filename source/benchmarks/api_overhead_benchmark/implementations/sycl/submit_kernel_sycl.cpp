@@ -12,6 +12,7 @@
 
 #include <gtest/gtest.h>
 #include <sycl/sycl.hpp>
+#include <syclcompat/launch.hpp>
 
 static auto enableProfiling = sycl::property::queue::enable_profiling();
 static auto inOrder = sycl::property::queue::in_order();
@@ -22,6 +23,15 @@ static const sycl::property_list queueProps[] = {
     sycl::property_list{inOrder},
     sycl::property_list{inOrder, enableProfiling},
 };
+
+inline void eat_time_f(int u){
+    int kernelOperationsCount = u;
+    if (kernelOperationsCount > 4) {
+        volatile int value = kernelOperationsCount;
+        while (--value)
+            ;
+    }
+ };
 
 static TestResult run(const SubmitKernelArguments &arguments, Statistics &statistics) {
     MeasurementFields typeSelector(MeasurementUnit::Microseconds, MeasurementType::Cpu);
@@ -54,19 +64,33 @@ static TestResult run(const SubmitKernelArguments &arguments, Statistics &statis
 
     // Warmup
     for (auto iteration = 0u; iteration < arguments.numKernels; iteration++) {
-        queue.parallel_for(range, eat_time);
+        if (arguments.useSYCLcompat) {
+	    syclcompat::launch<eat_time_f>(range, queue, kernelOperationsCount);
+	}
+	else {
+	    queue.parallel_for(range, eat_time);
+	}
     }
-    queue.wait();
+    if (arguments.useSYCLcompat) {
+        syclcompat::wait(queue);
+    }
+    else {
+        queue.wait();
+    }
 
     // Benchmark
     for (auto i = 0u; i < arguments.iterations; i++) {
         timer.measureStart();
         for (auto iteration = 0u; iteration < arguments.numKernels; iteration++) {
-            if (!arguments.useEvents) {
-                sycl::ext::oneapi::experimental::nd_launch(queue, range, eat_time);
-            } else {
-                queue.parallel_for(range, eat_time);
-            }
+            if (arguments.useSYCLcompat) {
+                syclcompat::launch<eat_time_f>(range, queue, kernelOperationsCount);
+	    } else {
+                if (!arguments.useEvents) {
+                    sycl::ext::oneapi::experimental::nd_launch(queue, range, eat_time);
+                } else {
+                    queue.parallel_for(range, eat_time);
+                }
+	    }
         }
 
         if (!arguments.measureCompletionTime) {
@@ -74,7 +98,12 @@ static TestResult run(const SubmitKernelArguments &arguments, Statistics &statis
             statistics.pushValue(timer.get(), typeSelector.getUnit(), typeSelector.getType());
         }
 
-        queue.wait();
+	if (arguments.useSYCLcompat) {
+            syclcompat::wait(queue);
+	}
+	else {
+            queue.wait();
+	}
 
         if (arguments.measureCompletionTime) {
             timer.measureEnd();

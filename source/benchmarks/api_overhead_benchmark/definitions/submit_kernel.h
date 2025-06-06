@@ -17,6 +17,7 @@ struct SubmitKernelArguments : TestCaseArgumentContainer {
     PositiveIntegerArgument numKernels;
     PositiveIntegerArgument kernelExecutionTime;
     BooleanArgument measureCompletionTime;
+    BooleanArgument useSYCLcompat;
 
     SubmitKernelArguments()
         : useProfiling(*this, "Profiling", "Create the queue with the enable_profiling property"),
@@ -24,7 +25,8 @@ struct SubmitKernelArguments : TestCaseArgumentContainer {
           useEvents(*this, "UseEvents", "Use events when enqueuing kernels. When false, SYCL will use eventless enqueue functions."),
           numKernels(*this, "NumKernels", "Number of kernels to submit to the queue"),
           kernelExecutionTime(*this, "KernelExecTime", "Approximately how long a single kernel executes, in us"),
-          measureCompletionTime(*this, "MeasureCompletion", "Measures time taken to complete the submission (default is to measure only submit calls)") {}
+          measureCompletionTime(*this, "MeasureCompletion", "Measures time taken to complete the submission (default is to measure only submit calls)"),
+          useSYCLcompat(*this, "UseSYCLCompat", "Use SYCLCompat APIs in place of standard SYCL APIs") {}
 };
 
 struct SubmitKernel : TestCase<SubmitKernelArguments> {

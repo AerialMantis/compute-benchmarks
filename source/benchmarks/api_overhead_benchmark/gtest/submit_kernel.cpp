@@ -14,7 +14,7 @@
 
 [[maybe_unused]] static const inline RegisterTestCase<SubmitKernel> registerTestCase{};
 
-class SubmitKernelTest : public ::testing::TestWithParam<std::tuple<Api, bool, bool, bool, size_t, size_t, bool>> {
+class SubmitKernelTest : public ::testing::TestWithParam<std::tuple<Api, bool, bool, bool, size_t, size_t, bool, bool>> {
 };
 
 TEST_P(SubmitKernelTest, Test) {
@@ -26,6 +26,7 @@ TEST_P(SubmitKernelTest, Test) {
     args.numKernels = std::get<4>(GetParam());
     args.kernelExecutionTime = std::get<5>(GetParam());
     args.measureCompletionTime = std::get<6>(GetParam());
+    args.useSYCLcompat = std::get<7>(GetParam());
     SubmitKernel test;
     test.run(args);
 }
@@ -40,4 +41,5 @@ INSTANTIATE_TEST_SUITE_P(
         ::testing::Values(false, true),   // useEvents
         ::testing::Values(10u),           // numKernels
         ::testing::Values(1u),            // kernelExecutionTime
-        ::testing::Values(false, true))); // measureCompletionTime
+        ::testing::Values(false, true),   // measureCompletionTime
+	::testing::Values(false, true))); // useSYCLCompat
